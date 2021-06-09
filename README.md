@@ -40,3 +40,9 @@ Barebones library to visualize simple manipulation environments
 1. **Whine**
 
     Let me know when something doesn't work.
+
+### Example
+
+A simple visualization with a gripper, an object and world reference frame should look like this.
+
+![example](assets/screenshot.png)
