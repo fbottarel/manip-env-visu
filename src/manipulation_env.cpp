@@ -1,4 +1,4 @@
-#include "manipulation_env.h"
+#include <manip-env-visu/manipulation_env.h>
 
 namespace mev
 {

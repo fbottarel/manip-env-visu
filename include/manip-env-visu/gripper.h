@@ -1,9 +1,9 @@
 #ifndef GRIPPER_H
 #define GRIPPER_H
 
-#include "utils.h"
-#include "joint.h"
-#include "link.h"
+#include <manip-env-visu/utils.h>
+#include <manip-env-visu/joint.h>
+#include <manip-env-visu/link.h>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>

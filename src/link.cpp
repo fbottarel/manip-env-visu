@@ -1,4 +1,4 @@
-#include "link.h"
+#include <manip-env-visu/link.h>
 
 namespace mev
 {

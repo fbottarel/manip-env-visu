@@ -1,0 +1,5 @@
+{
+    "cmake.configureSettings": {
+        "VTK_DIR" : "/home/fbottarel/workspace/install_dir/lib/cmake/vtk-8.2"
+    }
+}

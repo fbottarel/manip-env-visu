@@ -1,4 +1,4 @@
-#include "visual_geometry.h"
+#include <manip-env-visu/visual_geometry.h>
 
 namespace mev
 {

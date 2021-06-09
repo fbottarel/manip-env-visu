@@ -1,4 +1,4 @@
-#include "gripper.h"
+#include <manip-env-visu/gripper.h>
 
 namespace mev
 {

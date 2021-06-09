@@ -23,7 +23,7 @@
 #include <Eigen/Geometry>
 
 #include <urdf_model/link.h>
-#include <utils.h>
+#include <manip-env-visu/utils.h>
 
 #include <math.h>
 

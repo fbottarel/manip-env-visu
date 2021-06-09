@@ -3,9 +3,9 @@
 
 #include <fstream>
 
-#include "utils.h"
-#include "visual_geometry.h"
-#include "joint.h"
+#include <manip-env-visu/utils.h>
+#include <manip-env-visu/visual_geometry.h>
+#include <manip-env-visu/joint.h>
 
 #include <Eigen/Core>
 

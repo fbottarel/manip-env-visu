@@ -67,12 +67,12 @@ include(${VTK_USE_FILE})
 # Define lists for header and source files
 
 set(${LIB_TARGET_NAME}_HDR
-    include/gripper.h
-    include/joint.h
-    include/link.h
-    include/manipulation_env.h
-    include/utils.h
-    include/visual_geometry.h
+    include/manip-env-visu/gripper.h
+    include/manip-env-visu/joint.h
+    include/manip-env-visu/link.h
+    include/manip-env-visu/manipulation_env.h
+    include/manip-env-visu/utils.h
+    include/manip-env-visu/visual_geometry.h
     )
 
 set(${LIB_TARGET_NAME}_SRC
@@ -130,7 +130,7 @@ install(TARGETS ${PROJECT_NAME} EXPORT ${LIB_TARGET_NAME}-config
 install(DIRECTORY
         include/
         DESTINATION
-        ${CMAKE_INSTALL_INCLUDEDIR}/${LIB_TARGET_NAME}
+        ${CMAKE_INSTALL_INCLUDEDIR}
         )
 install(EXPORT
         ${LIB_TARGET_NAME}-config

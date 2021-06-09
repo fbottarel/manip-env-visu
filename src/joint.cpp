@@ -1,4 +1,4 @@
-#include "joint.h"
+#include <manip-env-visu/joint.h>
 
 namespace mev
 {

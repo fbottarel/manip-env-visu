@@ -28,7 +28,7 @@
 #include <fstream>
 #include <stdio.h>
 
-#include "manipulation_env.h"
+#include <manip-env-visu/manipulation_env.h>
 
 #include <vtkPNGReader.h>
 #include <vtkTexture.h>

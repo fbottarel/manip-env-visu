@@ -1,4 +1,4 @@
-#include "utils.h"
+#include <manip-env-visu/utils.h>
 
 bool fileExists(const std::string filename)
 {

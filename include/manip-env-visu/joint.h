@@ -3,7 +3,7 @@
 
 #include <fstream>
 
-#include "utils.h"
+#include <manip-env-visu/utils.h>
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
