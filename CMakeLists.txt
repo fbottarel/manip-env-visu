@@ -1,8 +1,22 @@
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
-set(CMAKE_CXX_STANDARD 17)
 
-project(manip-env-visu VERSION 0.1.0 DESCRIPTION "Simple lib for manipulation environment visualization")
+project(manip-env-visu VERSION 0.1.0 DESCRIPTION "Simple lib for manipulation environment visualization" LANGUAGES CXX)
+
 set(LIB_TARGET_NAME manip-env-visu)
+set(CMAKE_CXX_STANDARD 17)
+set(DEFAULT_BUILD_TYPE "Release")
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to '${DEFAULT_BUILD_TYPE}' as none was specified.")
+  set(CMAKE_BUILD_TYPE "${DEFAULT_BUILD_TYPE}" CACHE STRING "Choose the type of build." FORCE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
+
+# Use GNU installation dirs as standard
+
+include(GNUInstallDirs)
+
 # Find the urdfdom dependency
 
 find_package(urdfdom REQUIRED)
@@ -81,8 +95,16 @@ add_library(${LIB_TARGET_NAME} SHARED
 
 target_include_directories(${LIB_TARGET_NAME}
                            PUBLIC
-                           ${CMAKE_CURRENT_SOURCE_DIR}/include
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                           $<INSTALL_INTERFACE:include>
                            )
+
+# Set target properties
+
+set_target_properties(${LIB_TARGET_NAME} PROPERTIES
+                      VERSION ${PROJECT_VERSION}
+                      SOVERSION 1
+                      )
 
 # Link dependencies for the shared lib
 
@@ -97,4 +119,27 @@ target_link_libraries(${LIB_TARGET_NAME}
 # Compile examples
 
 add_subdirectory(examples)
+
+# Declare install targets and paths
+
+install(TARGETS ${PROJECT_NAME} EXPORT ${LIB_TARGET_NAME}-config
+        ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}
+        )
+install(DIRECTORY
+        include/
+        DESTINATION
+        ${CMAKE_INSTALL_INCLUDEDIR}/${LIB_TARGET_NAME}
+        )
+install(EXPORT
+        ${LIB_TARGET_NAME}-config
+        DESTINATION
+        share/${LIB_TARGET_NAME}/cmake
+        )
+export(TARGETS
+       ${LIB_TARGET_NAME}
+       FILE
+       ${LIB_TARGET_NAME}-config.cmake
+       )
 
