@@ -31,7 +31,7 @@ and then use the additional `-D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++
     The `make install` is optional, you can just `make`.
 1. **Use**
 
-    In your `CMakeLists.txt`, make sure to find the library. In case of a custom installation path, specify the `manip-env-visu_DIR` explicitly. If you use the default install path, it will be found automatically.
+    In your `CMakeLists.txt`, make sure to find the library. In case of a custom installation path, specify the `manip-env-visu_DIR` explicitly. Also, make sure to update your `LD_LIBRARY_PATH` accordingly, since this is a shared library. If you use the default install path, it will be found automatically.
 
     A minimal example `CMakeLists.txt` for a `test.cpp` file looks something like this
 
