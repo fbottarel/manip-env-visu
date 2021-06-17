@@ -37,7 +37,7 @@ endif()
 
 # Find VTK modules
 
-find_package(VTK COMPONENTS
+find_package(VTK 8.2 REQUIRED COMPONENTS
   vtkCommonColor
   vtkCommonCore
   vtkCommonDataModel
