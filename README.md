@@ -39,7 +39,18 @@ Barebones library to visualize simple manipulation environments
     ```
 1. **Whine**
 
-    Let me know when something doesn't work.
+    Let me know when something doesn't work. Open an issue and I'll try to help!
+
+### Docker
+
+I added a Docker example in order to show how to install the essential dependencies from scratch. You can use it as a development environment, if you wish!
+
+Assuming you have Docker installed, build the image with
+```
+ cd docker
+ docker build -t fbottarel/manip-env-visu:latest .
+```
+and run the aptly named `run.sh` shell script.
 
 ### Example
 
