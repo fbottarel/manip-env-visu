@@ -1,12 +1,16 @@
-message("Processing examples")
+set(EXE_TARGET_NAME gripper_render)
 
-add_executable(gripper_render
-               main.cpp
-               )
+find_package(manip-env-visu REQUIRED)
 
-target_link_libraries(gripper_render
-                      ${LIB_TARGET_NAME}
-                      ${urdfdom_LIBRARIES}
-                      Eigen3::Eigen
-                      ${VTK_LIBRARIES}
+set(${EXE_TARGET_NAME}_SRC
+    main.cpp
+)
+
+add_executable(${EXE_TARGET_NAME}
+               ${${EXE_TARGET_NAME}_SRC}
+)
+
+target_link_libraries(${EXE_TARGET_NAME}
+                      PRIVATE
+                      manip-env-visu::manip-env-visu
 )

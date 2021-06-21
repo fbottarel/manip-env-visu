@@ -1,145 +1,153 @@
-cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.5)
 
-project(manip-env-visu VERSION 0.1.0 DESCRIPTION "Simple lib for manipulation environment visualization" LANGUAGES CXX)
+### Uses the awesome CMake library template
+### https://github.com/robotology/how-to-export-cpp-library
 
-set(LIB_TARGET_NAME manip-env-visu)
+### CUSTOMIZATION STEPS
+# 1. Change the argument to project() with the name of your library/package
+#    (it will be the one used for find_package() call)
+# 2. Change version information
+# 3. Add your library source files in the subdirectories
+#    - src/"LibName"/include
+#    - src/"LibName"/src
+# 4. Add your executable source files in the subdirectories
+#    - src/"ExecName"
+# 5. Update src/CMakeLists.txt
+# 6. Add the tests to your library in /test subdirectory and modify
+#    test/CMakeLists.txt accordingly.
+###
+
+# This sets the PROJECT_NAME, PROJECT_VERSION as well as other variable
+# listed here: https://cmake.org/cmake/help/latest/command/project.html.
+# We use this name to export all the files such that is then possible to use
+# find_package(LibTemplateCMake) in third party projects.
+# LANGUAGES specifies which languages your project supports. To have a broad
+# support with external libraries, it is good practice to list both CXX and C.
+# Infact, some legacy Find<package>.cmake files that require the C language to
+# be enabled and thus using only CXX may cause issues. Note that by default when
+# LANGUAGES is not specified CMake enables both CXX and C.
+project(manip-env-visu
+        DESCRIPTION "Simple lib for manipulation environment visualization"
+        LANGUAGES CXX
+        VERSION 0.1.0)
+
 set(CMAKE_CXX_STANDARD 17)
-set(DEFAULT_BUILD_TYPE "Release")
 
-if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to '${DEFAULT_BUILD_TYPE}' as none was specified.")
-  set(CMAKE_BUILD_TYPE "${DEFAULT_BUILD_TYPE}" CACHE STRING "Choose the type of build." FORCE)
-  # Set the possible values of build type for cmake-gui
-  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-endif()
-
-# Use GNU installation dirs as standard
-
+# Defines the CMAKE_INSTALL_LIBDIR, CMAKE_INSTALL_BINDIR and many other useful macros.
+# See https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
 include(GNUInstallDirs)
 
-# Find the urdfdom dependency
+# Control where libraries and executables are placed during the build.
+# With the following settings executables are placed in <the top level of the
+# build tree>/bin and libraries/archives in <top level of the build tree>/lib.
+# This is particularly useful to run ctests on libraries built on Windows
+# machines: tests, which are executables, are placed in the same folders of
+# dlls, which are treated as executables as well, so that they can properly
+# find the libraries to run. This is a because of missing RPATH on Windows.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}")
 
-find_package(urdfdom REQUIRED)
-if (${urdfdom_FOUND})
-  message(STATUS "Found urdfdom package")
-else (${urdfdom_FOUND})
-  message(FATAL_ERROR "Could not locate urdfdom package")
+# To build shared libraries in Windows, we set CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS to TRUE.
+# See https://cmake.org/cmake/help/v3.4/variable/CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS.html
+# See https://blog.kitware.com/create-dlls-on-windows-without-declspec-using-new-cmake-export-all-feature/
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+# Under MSVC, we set CMAKE_DEBUG_POSTFIX to "d" to add a trailing "d" to library
+# built in debug mode. In this Windows user can compile, build and install the
+# library in both Release and Debug configuration avoiding naming clashes in the
+# installation directories.
+if(MSVC)
+    set(CMAKE_DEBUG_POSTFIX "d")
 endif()
 
-# Find the eigen dependency
+# Build position independent code.
+# Position Independent Code (PIC) is commonly used for shared libraries so that
+# the same shared library code can be loaded in each program address space in a
+# location where it will not overlap with any other uses of such memory.
+# In particular, this option avoids problems occurring when a process wants to
+# load more than one shared library at the same virtual address.
+# Since shared libraries cannot predict where other shared libraries could be
+# loaded, this is an unavoidable problem with the traditional shared library
+# concept.
+# Generating position-independent code is often the default behavior for most
+# modern compilers.
+# Moreover linking a static library that is not built with PIC from a shared
+# library will fail on some compiler/architecture combinations.
+# Further details on PIC can be found here:
+# https://eli.thegreenplace.net/2011/11/03/position-independent-code-pic-in-shared-libraries/
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-find_package(Eigen3 REQUIRED)
-if (${Eigen3_FOUND})
-  message(STATUS "Found eigen3 package")
-else (${Eigen3_FOUND})
-  message(FATAL_ERROR "Could not locate eigen3 package")
+# Disable C and C++ compiler extensions.
+# C/CXX_EXTENSIONS are ON by default to allow the compilers to use extended
+# variants of the C/CXX language.
+# However, this could expose cross-platform bugs in user code or in the headers
+# of third-party dependencies and thus it is strongly suggested to turn
+# extensions off.
+set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# We use
+# - InstallBasicPackageFiles (http://robotology.github.io/ycm/gh-pages/v0.8/module/InstallBasicPackageFiles.html)
+# - AddUninstallTarget (http://robotology.github.io/ycm/gh-pages/v0.8/module/AddUninstallTarget.html)
+# - AddInstallRPATHSupport (http://robotology.github.io/ycm/gh-pages/v0.8/module/AddInstallRPATHSupport.html)
+# from YCM. Files are under the cmake subdirectory.
+# See https://github.com/robotology/ycm/
+# If you don't want to ship these files with your code (recommended), you can
+# instead depend on YCM.
+# In this case replace the following line with
+# find_package(YCM REQUIRED)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+### Options
+# Shared/Dynamic or Static library?
+option(BUILD_SHARED_LIBS "Build libraries as shared as opposed to static" ON)
+
+# Enable RPATH support for installed binaries and libraries
+include(AddInstallRPATHSupport)
+add_install_rpath_support(BIN_DIRS "${CMAKE_INSTALL_FULL_BINDIR}"
+                          LIB_DIRS "${CMAKE_INSTALL_FULL_LIBDIR}"
+                          INSTALL_NAME_DIR "${CMAKE_INSTALL_FULL_LIBDIR}"
+                          USE_LINK_PATH)
+
+# Encourage user to specify a build type (e.g. Release, Debug, etc.), otherwise set it to Release.
+if(NOT CMAKE_CONFIGURATION_TYPES)
+    if(NOT CMAKE_BUILD_TYPE)
+        message(STATUS "Setting build type to 'Release' as none was specified.")
+        set_property(CACHE CMAKE_BUILD_TYPE PROPERTY VALUE "Release")
+    endif()
 endif()
 
-# Find VTK modules
+### Compile- and install-related commands.
+add_subdirectory(src)
 
-find_package(VTK 8.2 REQUIRED COMPONENTS
-  vtkCommonColor
-  vtkCommonCore
-  vtkCommonDataModel
-  vtkFiltersGeneral
-  vtkFiltersSources
-  vtkIOGeometry
-  vtkIOLegacy
-  vtkIOPLY
-  vtkIOXML
-  vtkInteractionStyle
-  vtkRenderingAnnotation
-  vtkRenderingContextOpenGL2
-  vtkRenderingCore
-  vtkRenderingFreeType
-  vtkRenderingGL2PSOpenGL2
-  vtkRenderingOpenGL2
-  QUIET
-)
-if (${VTK_FOUND})
-  message(STATUS "Found VTK package")
-  message(STATUS "VTK_VERSION: ${VTK_VERSION}")
-else (${VTK_FOUND})
-  message(FATAL_ERROR "Could not locate VTK package")
-endif()
-include(${VTK_USE_FILE})
+# Create and install CMake configuration files for your project that are
+# necessary to for other projects to call find_package(LibTemplateCMake).
+#
+# Note that it is extremely important to use exactly the project name while
+# installing configuration files (you can use PROJECT_NAME variable to avoid
+# any possible error). This is required to allow find_package() to properly
+# look for the installed library in system path, in particular in Windows when
+# the installation is performed in the default path.
+#
+# install_basic_package_files() comes with many input parameters to customize
+# the configuration files. The parameters used in the following call provide
+# basic versions of CMake configuration files.
+# See install_basic_package_files() documentation found in ./cmake folder.
+#
+# Note that if your library depends from other libraries, you are probably
+# required to used the install_basic_package_files() DEPENDENCIES option.
+include(InstallBasicPackageFiles)
+set(DEPENDENCIES "Eigen3" "urdfdom" "VTK")
+install_basic_package_files(${PROJECT_NAME}
+                            VERSION ${${PROJECT_NAME}_VERSION}
+                            COMPATIBILITY AnyNewerVersion
+                            EXPORT ${PROJECT_NAME}
+                            VARS_PREFIX ${PROJECT_NAME}
+                            NO_CHECK_REQUIRED_COMPONENTS_MACRO
+                            DEPENDENCIES ${DEPENDENCIES})
+# Add the uninstall target
+include(AddUninstallTarget)
 
-# Define lists for header and source files
-
-set(${LIB_TARGET_NAME}_HDR
-    include/manip-env-visu/gripper.h
-    include/manip-env-visu/joint.h
-    include/manip-env-visu/link.h
-    include/manip-env-visu/manipulation_env.h
-    include/manip-env-visu/utils.h
-    include/manip-env-visu/visual_geometry.h
-    )
-
-set(${LIB_TARGET_NAME}_SRC
-    src/gripper.cpp
-    src/joint.cpp
-    src/link.cpp
-    src/manipulation_env.cpp
-    src/utils.cpp
-    src/visual_geometry.cpp
-    )
-
-# Declare shared library
-
-add_library(${LIB_TARGET_NAME} SHARED
-            ${${LIB_TARGET_NAME}_SRC}
-            ${${LIB_TARGET_NAME}_HDR}
-            )
-
-# Set headers dir as include
-
-target_include_directories(${LIB_TARGET_NAME}
-                           PUBLIC
-                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-                           $<INSTALL_INTERFACE:include>
-                           )
-
-# Set target properties
-
-set_target_properties(${LIB_TARGET_NAME} PROPERTIES
-                      VERSION ${PROJECT_VERSION}
-                      SOVERSION 1
-                      )
-
-# Link dependencies for the shared lib
-
-message("Processing library")
-target_link_libraries(${LIB_TARGET_NAME}
-                      PUBLIC
-                      Eigen3::Eigen
-                      ${urdfdom_LIBRARIES}
-                      ${VTK_LIBRARIES}
-                      )
-
-# Compile examples
-
+# Build examples
 add_subdirectory(examples)
-
-# Declare install targets and paths
-
-install(TARGETS ${PROJECT_NAME} EXPORT ${LIB_TARGET_NAME}-config
-        ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}
-        )
-install(DIRECTORY
-        include/
-        DESTINATION
-        ${CMAKE_INSTALL_INCLUDEDIR}
-        )
-install(EXPORT
-        ${LIB_TARGET_NAME}-config
-        DESTINATION
-        share/${LIB_TARGET_NAME}/cmake
-        )
-export(TARGETS
-       ${LIB_TARGET_NAME}
-       FILE
-       ${LIB_TARGET_NAME}-config.cmake
-       )
-
