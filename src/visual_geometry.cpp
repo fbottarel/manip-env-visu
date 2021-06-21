@@ -40,9 +40,9 @@ namespace mev
         Eigen::Matrix3f rotation = geometry_world_pose.block<3,3>(0,0);
         Eigen::Vector4f position = geometry_world_pose.col(3);
 
-        if (rotation.determinant() != 1.0f)
+        if (!isMatrixRotation(rotation))
         {
-            std::cout << "Rotation matrix has determinant != 1" << std::endl;
+            std::cout << "Not a rotation matrix" << std::endl;
             return false;
         }
         if (geometry_world_pose(3,3) != 1.0f)
