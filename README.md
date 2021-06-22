@@ -7,14 +7,14 @@ Barebones library to visualize simple manipulation environments
 - **liburdfdom** - can be installed via package manager, in recent ubuntu distros this does not require ROS
 - **VTK** - this can also be installed via package manager, but you will need VTK>=8.2 in order for this code to work. I strongly suggest compiling VTK 8.2 from source and running cmake with the option `-DVTK_DIR=<vtk_cmake_path>`.
 
-**Note on compilers** - This code uses the `filesystem` header, which is part of the standard c++ libraries since c++17. If you have an older compiler (e.g. `gcc-7`, as it is default on Ubuntu 18.04) you need to upgrade it. For instance, you can do it using 
+**Note on compilers** - This code uses the `filesystem` header, which is part of the standard c++ libraries since c++17. If you have an older compiler (e.g. `gcc-7`, as it is default on Ubuntu 18.04) you need to upgrade it. For instance, you can do it using
 ```
 sudo apt install software-properties-common build-essentials
 sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt update
 sudo apt install gcc-9 g++-9
 ```
-and then use the additional `-D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++-9` cmake flags. 
+and then use the additional `-D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++-9` cmake flags.
 
 ### Usage
 
@@ -36,7 +36,7 @@ and then use the additional `-D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++
     A minimal example `CMakeLists.txt` for a `test.cpp` file looks something like this
 
     ```
-    cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
+    cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
     project(example-cpp)
     set(CMAKE_CXX_STANDARD 17)
     find_package(manip-env-visu REQUIRED)
@@ -44,7 +44,7 @@ and then use the additional `-D CMAKE_C_COMPILER=gcc-9 -D CMAKE_CXX_COMPILER=g++
     add_executable(example-cpp main.cpp)
 
     target_link_libraries(example-cpp
-                          manip-env-visu)
+                          manip-env-visu::manip-env-visu)
     ```
 1. **Whine**
 
