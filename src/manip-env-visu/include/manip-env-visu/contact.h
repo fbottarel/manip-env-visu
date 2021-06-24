@@ -52,9 +52,12 @@ namespace mev
         vtkSmartPointer<vtkNamedColors> colors;
 
         // Is alpha channel the transparency of the geometry?
-        std::array<unsigned char, 4> cone_color{{0, 255, 0, 255}};
-        std::array<unsigned char, 4> force_color{{255, 255, 0, 255}};
-        std::array<unsigned char, 4> point_color{{0, 0, 255}};
+        std::array<unsigned char, 4> cone_color{{0, 255, 0, 100}};
+        std::array<unsigned char, 4> force_color{{255, 255, 0, 100}};
+        std::array<unsigned char, 4> point_color{{0, 0, 255, 100}};
+
+        void setActorColor(const vtkSmartPointer<vtkActor> actor,
+                           const std::array<unsigned char, 4>& color);
 
         public:
 
@@ -69,9 +72,9 @@ namespace mev
         std::vector<vtkSmartPointer<vtkActor>> getGeometryActors();
         void addGeometryToRenderer(vtkSmartPointer<vtkRenderer> renderer);
         bool setContactNormal(const Eigen::Matrix4f& contact_normal);
-        void setPointColor(const std::array<unsigned int, 4>& color);
-        void setForceColor(const std::array<unsigned int, 4>& color);
-        void setConeColor(const std::array<unsigned int, 4>& color);
+        void setPointColor(const std::array<unsigned char, 4>& color);
+        void setForceColor(const std::array<unsigned char, 4>& color);
+        void setConeColor(const std::array<unsigned char, 4>& color);
     };
 }
 
