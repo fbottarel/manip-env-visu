@@ -100,6 +100,22 @@ namespace mev
         return true;
     }
 
+    void ManipulationEnv::addContactPoint(const Eigen::Matrix4f& contact_normal,
+                        float friction_coeff,
+                        bool display_cone,
+                        bool display_force,
+                        bool display_contact_point
+                        )
+    {
+        std::shared_ptr<mev::Contact> contact = std::make_shared<mev::Contact> (contact_normal,
+                                                                                friction_coeff,
+                                                                                display_cone,
+                                                                                display_force,
+                                                                                display_contact_point);
+        contact->addGeometryToRenderer(renderer);
+        contacts.push_back(contact);
+    }
+
     void ManipulationEnv::render()
     {
         render_window->Render();
