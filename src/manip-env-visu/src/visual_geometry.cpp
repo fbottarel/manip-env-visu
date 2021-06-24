@@ -79,6 +79,12 @@ namespace mev
         return true;
     }
 
+    void VisualGeometry::setOpacity(const float& opacity)
+    {
+        // VTK accepts opacity values up to 1
+        geometry_actor->GetProperty()->SetOpacity((opacity < 1.0) ? opacity : 1.0);
+    }
+
     /// the forward slash here is dirty, it should be fixed
     URDFVisualGeometry::URDFVisualGeometry(urdf::MeshSharedPtr urdf_geometry, const std::string& urdf_path)
     : VisualGeometry(getDirPathFromFilePath(urdf_path) + "/" + urdf_geometry->filename),

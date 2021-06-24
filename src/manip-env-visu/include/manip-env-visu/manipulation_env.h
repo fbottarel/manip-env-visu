@@ -50,9 +50,16 @@ namespace mev
                      const std::string& x_text,
                      const std::string& y_text,
                      const std::string& z_text);
-        bool addHand(const std::string& gripper_urdf_filename, const Eigen::Matrix4f& pose, const std::vector<float> joint_values);
-        bool addObject(const std::string& model_filename, const std::string& texture_filename, const Eigen::Matrix4f& pose);
-        bool addObject(const std::string& model_filename, const Eigen::Matrix4f& pose);
+        bool addHand(const std::string& gripper_urdf_filename,
+                     const Eigen::Matrix4f& pose,
+                     const std::vector<float> joint_values);
+        bool addObject(const std::string& model_filename,
+                       const std::string& texture_filename,
+                       const Eigen::Matrix4f& pose,
+                       const float& opacity = 1.0);
+        bool addObject(const std::string& model_filename,
+                       const Eigen::Matrix4f& pose,
+                       const float& opacity = 1.0);
         void addContactPoint(const Eigen::Matrix4f& contact_normal,
                              float friction_coeff = 0.0,
                              bool display_cone = false,

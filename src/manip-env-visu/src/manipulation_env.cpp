@@ -72,7 +72,7 @@ namespace mev
         return true;
     }
 
-    bool ManipulationEnv::addObject(const std::string& model_filename, const std::string& texture_filename, const Eigen::Matrix4f& pose)
+    bool ManipulationEnv::addObject(const std::string& model_filename, const std::string& texture_filename, const Eigen::Matrix4f& pose, const float& opacity)
     {
         if (!std::filesystem::exists(model_filename))
         {
@@ -81,12 +81,13 @@ namespace mev
         }
         std::shared_ptr<VisualGeometry> manip_object = std::make_shared<VisualGeometry> (model_filename, "SlateGray", texture_filename);
         manip_object->setGeometryWorldPose(pose);
+        manip_object->setOpacity(opacity);
         manip_object->addGeometryToRenderer(renderer);
         manipulation_objects.push_back(manip_object);
         return true;
     }
 
-    bool ManipulationEnv::addObject(const std::string& model_filename, const Eigen::Matrix4f& pose)
+    bool ManipulationEnv::addObject(const std::string& model_filename, const Eigen::Matrix4f& pose, const float& opacity)
     {
         if (!std::filesystem::exists(model_filename))
         {
@@ -95,6 +96,7 @@ namespace mev
         }
         std::shared_ptr<VisualGeometry> manip_object = std::make_shared<VisualGeometry> (model_filename, "SlateGray");
         manip_object->setGeometryWorldPose(pose);
+        manip_object->setOpacity(opacity);
         manip_object->addGeometryToRenderer(renderer);
         manipulation_objects.push_back(manip_object);
         return true;

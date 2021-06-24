@@ -57,6 +57,7 @@ namespace mev
         void addGeometryToRenderer(vtkSmartPointer<vtkRenderer> renderer);
         static bool setActorWorldPose(const vtkSmartPointer<vtkActor> vtk_actor,
                                       const Eigen::Matrix4f& transform);
+        void setOpacity(const float& opacity);
     };
 
     class URDFVisualGeometry : public VisualGeometry

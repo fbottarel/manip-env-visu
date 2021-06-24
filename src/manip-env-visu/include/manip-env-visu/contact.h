@@ -52,7 +52,6 @@ namespace mev
 
         vtkSmartPointer<vtkNamedColors> colors;
 
-        // Is alpha channel the transparency of the geometry?
         std::array<unsigned char, 4> cone_color{{0, 255, 0, 100}};
         std::array<unsigned char, 4> force_color{{255, 255, 0, 100}};
         std::array<unsigned char, 4> point_color{{0, 0, 255, 100}};
