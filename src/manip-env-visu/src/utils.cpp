@@ -8,24 +8,35 @@ bool fileExists(const std::string filename)
 
 bool isMatrixRotation(const Eigen::Matrix3f& matrix)
 {
-  // A square matrix is a rotation matrix iff
-  // M*M.transpose=identity and det(M)=1
+    // A square matrix is a rotation matrix iff
+    // M*M.transpose=identity and det(M)=1
 
-  Eigen::MatrixXf det(1,1);
-  det << matrix.determinant();
-  if (!det.isApproxToConstant(1, 0.01))
-  {
-    return false;
-  }
+    Eigen::MatrixXf det(1,1);
+    det << matrix.determinant();
+    if (!det.isApproxToConstant(1, 0.01))
+    {
+      return false;
+    }
 
-  Eigen::Matrix3f id;
-  id = matrix.transpose() * matrix;
-  if (!id.isIdentity(0.01))
-  {
-    return false;
-  }
+    Eigen::Matrix3f id;
+    id = matrix.transpose() * matrix;
+    if (!id.isIdentity(0.01))
+    {
+      return false;
+    }
 
-  return true;
+    return true;
+}
+
+bool isMatrixHomogeneous(const Eigen::Matrix4f& matrix)
+{
+    Eigen::RowVector4f lastrow;
+    lastrow << 0.0, 0.0, 0.0, 1.0;
+    if (!matrix.row(3).isApprox(lastrow, 0.01))
+    {
+        return false;
+    }
+    return true;
 }
 
 Eigen::Matrix4f getHomogeneousTransform(const urdf::Pose &pose)

@@ -37,30 +37,7 @@ namespace mev
     {
         this->geometry_world_pose = geometry_world_pose;
 
-        Eigen::Matrix3f rotation = geometry_world_pose.block<3,3>(0,0);
-        Eigen::Vector4f position = geometry_world_pose.col(3);
-
-        if (!isMatrixRotation(rotation))
-        {
-            std::cout << "Not a rotation matrix" << std::endl;
-            return false;
-        }
-        if (geometry_world_pose(3,3) != 1.0f)
-        {
-            std::cout << "4x4 matrix is not homogeneous" << std::endl;
-            return false;
-        }
-
-        geometry_actor->SetPosition(position[0],
-                                    position[1],
-                                    position[2]);
-        // Express rotation as zxy
-        Eigen::Vector3f rotation_euler_deg = rotation.eulerAngles(2,0,1) * 180/M_PI;
-        // VTK requires rotations input as x y and z, in degrees
-        geometry_actor->SetOrientation(rotation_euler_deg[1],
-                                       rotation_euler_deg[2],
-                                       rotation_euler_deg[0]);
-        return true;
+        return setActorWorldPose(geometry_actor, geometry_world_pose);
     }
 
     vtkSmartPointer<vtkActor> VisualGeometry::getGeometryActor()
@@ -70,8 +47,42 @@ namespace mev
 
     void VisualGeometry::addGeometryToRenderer(vtkSmartPointer<vtkRenderer> renderer)
     {
-        // std::cout << "geometry is at position " << geometry_actor->GetPosition()[0] << " " << geometry_actor->GetPosition()[1] << " " << geometry_actor->GetPosition()[2] << std::endl;
         renderer->AddActor(geometry_actor);
+    }
+
+    bool VisualGeometry::setActorWorldPose(const vtkSmartPointer<vtkActor> vtk_actor,
+                                           const Eigen::Matrix4f& transform)
+    {
+        Eigen::Matrix3f rotation = transform.block<3,3>(0,0);
+        Eigen::Vector4f position = transform.col(3);
+
+        if (!isMatrixRotation(rotation))
+        {
+            std::cout << "Not a rotation matrix" << std::endl;
+            return false;
+        }
+        if (!isMatrixHomogeneous(transform))
+        {
+            std::cout << "4x4 matrix is not homogeneous" << std::endl;
+            return false;
+        }
+
+        vtk_actor->SetPosition(position[0],
+                               position[1],
+                               position[2]);
+        // Express rotation as zxy
+        Eigen::Vector3f rotation_euler_deg = rotation.eulerAngles(2,0,1) * 180/M_PI;
+        // VTK requires rotations input as x y and z, in degrees
+        vtk_actor->SetOrientation(rotation_euler_deg[1],
+                                  rotation_euler_deg[2],
+                                  rotation_euler_deg[0]);
+        return true;
+    }
+
+    void VisualGeometry::setOpacity(const float& opacity)
+    {
+        // VTK accepts opacity values up to 1
+        geometry_actor->GetProperty()->SetOpacity((opacity < 1.0) ? opacity : 1.0);
     }
 
     /// the forward slash here is dirty, it should be fixed

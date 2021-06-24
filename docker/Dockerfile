@@ -69,6 +69,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Build and install the repo
+RUN cd
 RUN git clone https://github.com/fbottarel/manip-env-visu \
     && mkdir -p manip-env-visu/build \
     && cd manip-env-visu/build \

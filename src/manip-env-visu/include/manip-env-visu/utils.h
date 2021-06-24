@@ -25,6 +25,9 @@ bool fileExists(const std::string filename);
 /// Is matrix a rotation matrix?
 bool isMatrixRotation(const Eigen::Matrix3f& matrix);
 
+/// Is matrix homogenous?
+bool isMatrixHomogeneous(const Eigen::Matrix4f& matrix);
+
 /// Pose to Eigen matrix
 Eigen::Matrix4f getHomogeneousTransform(const urdf::Pose &pose);
 
