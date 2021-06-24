@@ -44,19 +44,21 @@ namespace mev
         cone_actor = vtkSmartPointer<vtkActor>::New();
         cone_actor->SetMapper(cone_mapper);
         this->setConeColor(cone_color);
-        // TODO SET POSE
+        VisualGeometry::setActorWorldPose(cone_actor, contact_normal);
+
         force_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         force_mapper->SetInputConnection(force_transform_filter->GetOutputPort());
         force_actor = vtkSmartPointer<vtkActor>::New();
         force_actor->SetMapper(force_mapper);
         this->setForceColor(force_color);
-        // TODO SET POSE
+        VisualGeometry::setActorWorldPose(force_actor, contact_normal);
+
         point_mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         point_mapper->SetInputConnection(point_source->GetOutputPort());
         point_actor = vtkSmartPointer<vtkActor>::New();
         point_actor->SetMapper(point_mapper);
         this->setPointColor(point_color);
-        // TODO SET POSE
+        VisualGeometry::setActorWorldPose(point_actor, contact_normal);
     }
 
     bool Contact::setContactNormal(const Eigen::Matrix4f& contact_normal)

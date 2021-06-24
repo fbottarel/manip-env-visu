@@ -18,6 +18,7 @@
 #include <Eigen/Geometry>
 
 #include <manip-env-visu/utils.h>
+#include <manip-env-visu/visual_geometry.h>
 
 namespace mev
 {
@@ -45,9 +46,9 @@ namespace mev
         vtkSmartPointer<vtkActor> force_actor;
         vtkSmartPointer<vtkActor> point_actor;
 
-        float force_norm{0.1};
+        float force_norm{0.05};
         float friction_coeff;
-        float point_size{0.01};
+        float point_size{0.002};
 
         vtkSmartPointer<vtkNamedColors> colors;
 
