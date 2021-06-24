@@ -25,6 +25,7 @@
 #include <filesystem>
 
 #include <manip-env-visu/gripper.h>
+#include <manip-env-visu/contact.h>
 
 namespace mev
 {
@@ -41,6 +42,7 @@ namespace mev
     public:
         std::vector<std::shared_ptr<mev::Gripper>> hands_list;
         std::vector<std::shared_ptr<mev::VisualGeometry>> manipulation_objects;
+        std::vector<std::shared_ptr<mev::Contact>> contacts;
 
         ManipulationEnv();
         ~ManipulationEnv();
@@ -51,6 +53,12 @@ namespace mev
         bool addHand(const std::string& gripper_urdf_filename, const Eigen::Matrix4f& pose, const std::vector<float> joint_values);
         bool addObject(const std::string& model_filename, const std::string& texture_filename, const Eigen::Matrix4f& pose);
         bool addObject(const std::string& model_filename, const Eigen::Matrix4f& pose);
+        void addContactPoint(const Eigen::Matrix4f& contact_normal,
+                             float friction_coeff = 0.0,
+                             bool display_cone = false,
+                             bool display_force = false,
+                             bool display_contact_point = true
+                             );
         void render();
     };
 }

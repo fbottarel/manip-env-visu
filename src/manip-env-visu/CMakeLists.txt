@@ -28,6 +28,7 @@ set(${LIBRARY_TARGET_NAME}_SRC
     src/manipulation_env.cpp
     src/utils.cpp
     src/visual_geometry.cpp
+    src/contact.cpp
 )
 
 # List of HPP (header) library files.
@@ -38,6 +39,7 @@ set(${LIBRARY_TARGET_NAME}_HDR
     include/manip-env-visu/manipulation_env.h
     include/manip-env-visu/utils.h
     include/manip-env-visu/visual_geometry.h
+    include/manip-env-visu/contact.h
 )
 
 # You can add an external dependency using the find_package() function call
@@ -82,6 +84,7 @@ find_package(VTK 8.2 REQUIRED COMPONENTS
   vtkCommonColor
   vtkCommonCore
   vtkCommonDataModel
+  vtkCommonTransforms
   vtkFiltersGeneral
   vtkFiltersSources
   vtkIOGeometry

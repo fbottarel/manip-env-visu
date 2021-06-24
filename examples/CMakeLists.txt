@@ -1,14 +1,2 @@
-set(EXE_TARGET_NAME gripper_render)
-
-set(${EXE_TARGET_NAME}_SRC
-    main.cpp
-)
-
-add_executable(${EXE_TARGET_NAME}
-               ${${EXE_TARGET_NAME}_SRC}
-)
-
-target_link_libraries(${EXE_TARGET_NAME}
-                      PRIVATE
-                      manip-env-visu
-)
+add_subdirectory(basic_scene)
+add_subdirectory(contact_points)
