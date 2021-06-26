@@ -65,8 +65,6 @@ namespace mev
         std::shared_ptr<mev::Gripper> hand = std::make_shared<mev::Gripper> (gripper_urdf_filename);
         hand->setGripperRootPose(pose);
         hand->setJointValues(joint_values);
-        hand->refreshGripperGeometries();
-        hand->refreshGripperGeometries();
         hand->addGripperGeometriesToRenderer(renderer);
         hands_list.push_back(hand);
         return true;
