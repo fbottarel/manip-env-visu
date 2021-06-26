@@ -104,8 +104,8 @@ namespace mev
         std::shared_ptr<mev::Link> current_link = shared_from_this();
         while (current_link->linkHasParent())
         {
-            root_transform = root_transform * getTransformationToParentRefFrame();
-            current_link = parent_link;
+            root_transform = current_link->getTransformationToParentRefFrame() * root_transform;
+            current_link = current_link->parent_link;
         }
         return root_transform;
     }
