@@ -31,7 +31,7 @@ namespace mev
         force_vector_source->SetTipResolution(100);
         force_vector_source->SetShaftResolution(100);
         vtkNew<vtkTransform> transform;
-        transform->Scale(force_norm/2, force_norm/2, force_norm); // Just to make the arrow thinner
+        transform->Scale(force_norm, force_norm, force_scaled_magnitude); // Just to make the arrow thinner
         transform->RotateY(270);
         force_transform_filter = vtkSmartPointer<vtkTransformPolyDataFilter>::New();
         force_transform_filter->SetTransform(transform);
