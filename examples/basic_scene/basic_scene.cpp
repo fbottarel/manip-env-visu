@@ -33,11 +33,15 @@ int main(int argc, char const *argv[])
 
     // Spawn in a conveniently placed gripper, with proper joint values
 
-    std::vector<float> joint_values = {0.04, 0.04};
     Eigen::Matrix4f root_pose = Eigen::Matrix4f::Identity();
-    root_pose.col(3) << 0.2, 0.2, 0.17, 1;
-    root_pose.block<3,3>(0,0) <<  0,  1,  0,
-                                  1,  0,  0,
+    // For 2f85
+    // std::vector<float> joint_values = {0.1, 0.0, 0.1, -0.1, -0.1, 0.1, -0.1, -0.0};
+    // root_pose.col(3) << 0.2, 0.2, 0.15, 1;
+    // For Franka hand
+    std::vector<float> joint_values = {0.04, 0.04};
+    root_pose.col(3) << 0.2, 0.2, 0.23, 1;
+    root_pose.block<3,3>(0,0) <<  -1,  0,  0,
+                                  0,  1,  0,
                                   0,  0,  -1;
     manip_env.addHand(urdf_filename, root_pose, joint_values);
 
@@ -47,19 +51,19 @@ int main(int argc, char const *argv[])
     contact_1.block<3,3>(0,0) <<  0,  0,  1,
                                   0,  1,  0,
                                   -1,  0,  0;
-    contact_1.col(3) << 0.16, 0.2, 0.07, 1.0;
-    manip_env.addContactPoint(contact_1,
-                              0.4,
-                              true, true, true);
+    contact_1.col(3) << 0.17, 0.2, 0.07, 1.0;
+    manip_env.addContact(contact_1,
+                         0.4, 1.0,
+                         true, true, true);
 
     Eigen::Matrix4f contact_2 = Eigen::Matrix4f::Identity();
     contact_2.block<3,3>(0,0) <<  0,  0, -1,
                                   0,  1,  0,
                                   1,  0,  0;
-    contact_2.col(3) << 0.24, 0.2, 0.07, 1.0;
-    manip_env.addContactPoint(contact_2,
-                              0.4,
-                              true, true, true);
+    contact_2.col(3) << 0.23, 0.2, 0.07, 1.0;
+    manip_env.addContact(contact_2,
+                         0.4, 1.0,
+                         true, true, true);
 
     // Render scene
 

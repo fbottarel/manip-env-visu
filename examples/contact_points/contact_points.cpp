@@ -1,11 +1,11 @@
 /*
  * Generate a bunch of random contact points and visualizations.
- * Contact normals and what type of visualization for each contact
- * are randomized.
+ * Force magnitude, angle and color are randomized are randomized.
 */
 
 #include <manip-env-visu/manipulation_env.h>
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <math.h>
 #include <random>
 
@@ -14,28 +14,34 @@ int main(int argc, char const *argv[])
 
     mev::ManipulationEnv manip_env;
 
-    // Random generator of true and false booleans
+    // Random generator of contacts
+    auto gen_color = std::bind(std::uniform_int_distribution<>(0,255), std::default_random_engine());
+    auto gen_angle = std::bind(std::uniform_real_distribution<>(0.0, 0.5), std::default_random_engine());
+    auto gen_mag = std::bind(std::uniform_real_distribution<>(0.5, 5.0), std::default_random_engine());
+    auto gen_friction = std::bind(std::uniform_real_distribution<>(0.1, 0.8), std::default_random_engine());
+    auto gen_coord = std::bind(std::uniform_real_distribution<>(0.0, 0.5), std::default_random_engine());
 
-    auto gen_bool = std::bind(std::uniform_int_distribution<>(0,1), std::default_random_engine());
-    auto gen_friction = std::bind(std::uniform_real_distribution<>(0.1, 0.5), std::default_random_engine());
-    auto gen_coord = std::bind(std::uniform_real_distribution<>(0.0, 0.2), std::default_random_engine());
-
+    // Generate a random collection of contacts with varied colors
     for (size_t idx = 0; idx < 10; ++idx)
     {
-        Eigen::Affine3f t1;
-        t1.setIdentity();
-        Eigen::Vector3f rotation_1;
-        rotation_1.setRandom();
-        rotation_1.normalize();
-        Eigen::Vector3f translation_1;
-        translation_1 << static_cast<float>(gen_coord()), static_cast<float>(gen_coord()), static_cast<float>(gen_coord());
-        t1 = t1 * Eigen::AngleAxisf(M_PI/2, rotation_1) * Eigen::Translation3f(translation_1);
+        Eigen::Matrix4f base_contact_normal = Eigen::Matrix4f::Identity();
+        base_contact_normal.block<3,1>(0,3) << gen_coord(), gen_coord(), gen_coord();
 
-        manip_env.addContactPoint(t1.matrix(),
-                                static_cast<float>(gen_friction()),
-                                gen_bool(),
-                                gen_bool(),
-                                gen_bool());
+        Eigen::Matrix4f first_vector_transform(base_contact_normal);
+        first_vector_transform.block<3,3>(0,0) = Eigen::AngleAxisf(gen_angle() * M_PI, Eigen::Vector3f::UnitY()).matrix();
+
+        Eigen::Matrix4f second_vector_transform(base_contact_normal);
+        second_vector_transform.block<3,3>(0,0) = Eigen::AngleAxisf(gen_angle() * M_PI, Eigen::Vector3f::UnitX()).matrix();
+
+        manip_env.addFrictionCone(base_contact_normal, gen_friction(), 1.0, false, true);
+        manip_env.addContactForce(first_vector_transform, gen_mag(), {static_cast<unsigned char> (gen_color()),
+                                                                      static_cast<unsigned char> (gen_color()),
+                                                                      static_cast<unsigned char> (gen_color()),
+                                                                      255});
+        manip_env.addContactForce(second_vector_transform, gen_mag(), {static_cast<unsigned char> (gen_color()),
+                                                                       static_cast<unsigned char> (gen_color()),
+                                                                       static_cast<unsigned char> (gen_color()),
+                                                                       255});
     }
 
     manip_env.render();
