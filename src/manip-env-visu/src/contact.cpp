@@ -4,22 +4,26 @@ namespace mev
 {
     Contact::Contact(const Eigen::Matrix4f& contact_normal,
                      float friction_coeff,
+                     float force_magnitude,
                      bool display_cone,
                      bool display_force,
                      bool display_contact_point)
     : friction_coeff {friction_coeff},
+      force_magnitude{force_magnitude},
       display_cone {display_cone},
       display_force {display_force},
       display_contact_point {display_contact_point}
     {
         this->setContactNormal(contact_normal);
 
+        this->setScaledForceMagnitude();
+
         // Create sources with specified dimensions
         friction_cone_source = vtkSmartPointer<vtkConeSource>::New();
-        friction_cone_source->SetHeight(force_norm);
-        friction_cone_source->SetRadius(force_norm * friction_coeff);
+        friction_cone_source->SetHeight(force_scaled_magnitude);
+        friction_cone_source->SetRadius(force_scaled_magnitude * friction_coeff);
         friction_cone_source->SetResolution(100);
-        friction_cone_source->SetCenter(0, 0, force_norm/2);
+        friction_cone_source->SetCenter(0, 0, force_scaled_magnitude/2);
         friction_cone_source->SetDirection(0, 0, -1);
 
         // The arrow must lie on the z axis
@@ -97,6 +101,11 @@ namespace mev
         actor->GetProperty()->SetOpacity(color_normalized[3]);
     }
 
+    void Contact::setScaledForceMagnitude()
+    {
+        this->force_scaled_magnitude =  this->force_magnitude * this->force_norm;
+    }
+
     void Contact::setPointColor(const std::array<unsigned char, 4>& color)
     {
         this->setActorColor(point_actor, color);
@@ -122,6 +131,14 @@ namespace mev
             renderer->AddActor(cone_actor);
         if (!(display_contact_point || display_force || display_cone))
             std::cout << "[WARNING] no actor was added for contact point" << std::endl;
+    }
+
+    void Contact::setForceMagnitude(const double& force_magnitude)
+    {
+        // For visualization purposes, forces need to be scaled down in magnitude
+        // Otherwise, a 1N force would show up as a 1m arrow!
+        this->force_magnitude = static_cast<float> (force_magnitude);
+        setScaledForceMagnitude();
     }
 
 

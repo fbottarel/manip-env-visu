@@ -46,7 +46,9 @@ namespace mev
         vtkSmartPointer<vtkActor> force_actor;
         vtkSmartPointer<vtkActor> point_actor;
 
-        float force_norm{0.05};
+        float force_norm{0.05}; // corresponds to a 1N force
+        float force_magnitude;
+        float force_scaled_magnitude;
         float friction_coeff;
         float point_size{0.002};
 
@@ -58,6 +60,7 @@ namespace mev
 
         void setActorColor(const vtkSmartPointer<vtkActor> actor,
                            const std::array<unsigned char, 4>& color);
+        void setScaledForceMagnitude();
 
         public:
 
@@ -65,6 +68,7 @@ namespace mev
 
         Contact(const Eigen::Matrix4f& contact_normal,
                 float friction_coeff = 0.0,
+                float force_magnitude = 1.0,
                 bool display_cone = false,
                 bool display_force = false,
                 bool display_contact_point = true
@@ -75,6 +79,7 @@ namespace mev
         void setPointColor(const std::array<unsigned char, 4>& color);
         void setForceColor(const std::array<unsigned char, 4>& color);
         void setConeColor(const std::array<unsigned char, 4>& color);
+        void setForceMagnitude(const double& magnitude);
     };
 }
 
