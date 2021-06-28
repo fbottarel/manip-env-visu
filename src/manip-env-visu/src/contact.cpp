@@ -140,8 +140,5 @@ namespace mev
         this->force_magnitude = static_cast<float> (force_magnitude);
         setScaledForceMagnitude();
     }
-
-
-
 }
 
