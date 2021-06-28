@@ -100,8 +100,9 @@ namespace mev
         return true;
     }
 
-    void ManipulationEnv::addContactPoint(const Eigen::Matrix4f& contact_normal,
+    void ManipulationEnv::addContact(const Eigen::Matrix4f& contact_normal,
                         float friction_coeff,
+                        float force_magnitude,
                         bool display_cone,
                         bool display_force,
                         bool display_contact_point
@@ -109,9 +110,54 @@ namespace mev
     {
         std::shared_ptr<mev::Contact> contact = std::make_shared<mev::Contact> (contact_normal,
                                                                                 friction_coeff,
+                                                                                force_magnitude,
                                                                                 display_cone,
                                                                                 display_force,
                                                                                 display_contact_point);
+        contact->addGeometryToRenderer(renderer);
+        contacts.push_back(contact);
+    }
+
+    void ManipulationEnv::addContactPoint(const Eigen::Vector3f& contact_origin,
+                                          std::array<unsigned char, 4> color)
+    {
+        Eigen::Matrix4f point_tf = Eigen::Matrix4f::Identity();
+        point_tf.block<3,1>(0,3) = contact_origin;
+        std::shared_ptr<mev::Contact> contact =
+                            std::make_shared<mev::Contact> (point_tf,
+                                                            0.0, 0.0,
+                                                            false, false, true);
+        contact->setPointColor(color);
+        contact->addGeometryToRenderer(renderer);
+        contacts.push_back(contact);
+    }
+
+    void ManipulationEnv::addFrictionCone(const Eigen::Matrix4f& contact_normal,
+                                          float friction_coeff,
+                                          float force_magnitude,
+                                          bool display_normal,
+                                          bool display_contact_point,
+                                          std::array<unsigned char, 4> color)
+    {
+        std::shared_ptr<mev::Contact> contact =
+                            std::make_shared<mev::Contact> (contact_normal,
+                                                            friction_coeff,
+                                                            force_magnitude,
+                                                            true, display_normal, display_contact_point);
+        contact->setConeColor(color);
+        contact->addGeometryToRenderer(renderer);
+        contacts.push_back(contact);
+    }
+
+    void ManipulationEnv::addContactForce(const Eigen::Matrix4f& force_direction,
+                                          float force_magnitude,
+                                          std::array<unsigned char, 4> color)
+    {
+        std::shared_ptr<mev::Contact> contact =
+                            std::make_shared<mev::Contact> (force_direction,
+                                                            0.0, force_magnitude,
+                                                            false, true, false);
+        contact->setForceColor(color);
         contact->addGeometryToRenderer(renderer);
         contacts.push_back(contact);
     }

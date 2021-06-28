@@ -60,12 +60,23 @@ namespace mev
         bool addObject(const std::string& model_filename,
                        const Eigen::Matrix4f& pose,
                        const float& opacity = 1.0);
-        void addContactPoint(const Eigen::Matrix4f& contact_normal,
+        void addContact(const Eigen::Matrix4f& contact_normal,
                              float friction_coeff = 0.0,
+                             float force_magnitude = 1.0,
                              bool display_cone = false,
                              bool display_force = false,
-                             bool display_contact_point = true
-                             );
+                             bool display_contact_point = true);
+        void addContactPoint(const Eigen::Vector3f& contact_origin,
+                             std::array<unsigned char, 4> color = {0, 0, 255, 100});
+        void addFrictionCone(const Eigen::Matrix4f& contact_normal,
+                             float friction_coeff = 0.0,
+                             float force_magnitude = 1.0,
+                             bool display_normal = false,
+                             bool display_contact_point = true,
+                             std::array<unsigned char, 4> color = {0, 255, 0, 100});
+        void addContactForce(const Eigen::Matrix4f& force_direction,
+                             float force_magnitude = 1.0,
+                             std::array<unsigned char, 4> color = {255, 255, 0, 100});
         void render();
     };
 }
